@@ -1,0 +1,10 @@
+- name: Install packages needed for ansible
+  hosts: target
+  become: yes
+  tasks: 
+   - name: Update all packages to the latest version
+     apt:
+        upgrade: yes
+        update_cache: yes
+   - name: 'Reboot the machine'
+     shell: reboot

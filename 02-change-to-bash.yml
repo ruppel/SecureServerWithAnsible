@@ -1,0 +1,9 @@
+- name: Move from dash to bash because of ispconfig
+  hosts: target
+  become: yes
+  tasks:
+    - name: 'Reconfigure dash'
+      shell: 
+        cmd: dpkg-reconfigure -f readline dash
+        stdin: 'no\n'
+         

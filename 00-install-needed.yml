@@ -1,0 +1,7 @@
+- name: Install packages needed for ansible
+  hosts: target
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Raw installation
+      raw: 'apt-get install -y python3 sudo gnupg python3-apt'
