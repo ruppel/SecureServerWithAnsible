@@ -1,0 +1,10 @@
+- name: Install PHP Opcode cache
+  package:
+    name:
+      - php7.2-opcache
+      - php-apcu
+    state: present
+- name: Restart Apache service
+  service:
+    name: apache2
+    state: restarted

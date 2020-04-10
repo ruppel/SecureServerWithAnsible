@@ -1,0 +1,51 @@
+- name: create temporary ispconfig install directory
+  tempfile:
+    state: directory
+    prefix: ispconfig
+  register: isp_dir
+- debug:
+    var: isp_dir
+- name: Get and extract ISPConfig from server
+  unarchive:
+    src: "https://git.ispconfig.org/ispconfig/{{ ispconfig_main }}/repository/archive.tar.gz?ref={{ ispconfig_version }}"
+    dest: "{{ isp_dir.path }}"
+    remote_src: yes
+- name: Find new ispconfig artefact
+  find:
+    paths: "{{ isp_dir.path }}"
+    file_type: directory
+    patterns: "{{ ispconfig_main }}-{{ ispconfig_version }}*"
+  register: ispconfig_new
+- name: Configure ISPConfig
+  expect:
+    chdir: "/{{ ispconfig_new.files[0].path }}/install"
+    command: php -q install.php
+    echo: yes
+    timeout: 30
+    responses:
+      (.*)Select language \(en,de\)(.*): ""
+      (.*)Installation mode \(standard,expert\)(.*): ""
+      (.*)Full qualified hostname \(FQDN\) of the server, eg server1\.domain\.tld(.*): ""
+      (.*)MySQL server hostname(.*): ""
+      (.*)MySQL server port(.*): ""
+      (.*)MySQL root username(.*): ""
+      (.*)MySQL root password(.*): "{{ mysql.root_password }}"
+      (.*)MySQL database to create(.*): ""
+      (.*)MySQL charset(.*): ""
+      (.*)Country Name \(2 letter code\)(.*): "{{ sslcert.country }}"
+      (.*)State or Province Name \(full name\)(.*): "{{ sslcert.province }}"
+      (.*)Locality Name \(eg, city\)(.*): "{{ sslcert.locality }}"
+      (.*)Organization Name \(eg, company\)(.*): "{{ sslcert.orgname }}"
+      (.*)Organizational Unit Name \(eg, section\)(.*): "{{ sslcert.unitname }}"
+      (.*)Common Name \(e\.g\. server FQDN or YOUR name\)(.*): "{{ sslcert.commonname }}"
+      (.*)Email Address(.*): "{{ sslcert.email }}"
+      (.*)ISPConfig Port(.*): ""
+      (.*)Admin password(.*): "{{ ispconfig.admin_password }}"
+      (.*)Re-enter admin password(.*): "{{ ispconfig.admin_password }}"
+      (.*)Do you want a secure \(SSL\) connection to the ISPConfig web interface \(y,n\)(.*): "y"
+      (.*)A challenge password(.*): ""
+      (.*)An optional company name(.*): ""
+- name: Remove temporary files
+  file:
+    path: "{{ isp_dir.path }}"
+    state: absent

@@ -1,0 +1,5 @@
+- name: Install Let's Encrypt
+  package:
+    name:
+      - certbot
+    state: present

@@ -1,0 +1,15 @@
+- name: Install ClamAV
+  package:
+    name:
+      - clamav
+      - clamav-daemon
+      - clamav-docs
+      - daemon
+    state: present
+- name: Start freshclam
+  command: freshclam
+  ignore_errors: yes
+- name: Start ClamAV service
+  service:
+    name: clamav-daemon
+    state: started

@@ -1,0 +1,5 @@
+- name: Install HipHop Virtual Machine
+  package:
+    name:
+      - hhvm
+    state: present

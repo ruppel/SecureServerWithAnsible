@@ -1,0 +1,38 @@
+- name: Install Roundcube
+  package:
+    name:
+      - roundcube
+      - roundcube-core
+      - roundcube-mysql
+      - roundcube-plugins
+      - javascript-common
+      - libjs-jquery-mousewheel
+      - php-net-sieve
+      - tinymce
+#
+# ?? Reconfiguration needed ?? Don't know
+#
+- name: Configure roundcube (1)
+  lineinfile:
+    path: /etc/apache2/conf-enabled/roundcube.conf
+    regexp: '^(\s*)#(\s*)Alias /roundcube /var/lib/roundcube'
+    line: "Alias /roundcube /var/lib/roundcube"
+- name: Configure roundcube (2)
+  lineinfile:
+    path: /etc/apache2/conf-enabled/roundcube.conf
+    insertafter: "Alias /roundcube /var/lib/roundcube"
+    line: "Alias /webmail /var/lib/roundcube"
+- name: Configure roundcube (3)
+  lineinfile:
+    path: /etc/apache2/conf-enabled/roundcube.conf
+    insertafter: "<Directory /var/lib/roundcube/>"
+    line: "  AddType application/x-httpd-php .php"
+- name: Restart Apache service
+  service:
+    name: apache2
+    state: restarted
+- name: Set default host to localhost
+  lineinfile:
+    path: /etc/roundcube/config.inc.php
+    regexp: '^(\s*)\$config\[''default_host''\](\s*)=(.*)$'
+    line: "$config['default_host'] = 'localhost';"

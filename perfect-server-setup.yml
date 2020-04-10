@@ -1,0 +1,50 @@
+- name: Perfect Server Setup
+  hosts: target
+  become: yes
+  vars:
+    ispconfig:
+      hostname: "example.com"
+      admin_password: "verri##5##Crrittical"
+    mail:
+      system_mail_name: "server1.{{ ispconfig.hostname }}"
+      postmaster_email: "webmaster@{{ ispconfig.hostname }}"
+    mysql:
+      root_password: "9jsT76bmzY4B4DUXiTMq"
+    mailman:
+      admin_email: "listadmin@{{ ispconfig.hostname }}"
+      admin_password: "secrtPaass332"
+    sslcert:
+      country: "DE"
+      province: "BaWue"
+      locality: "Ulm"
+      orgname: "XYZ Enterprises"
+      unitname: "IT"
+      commonname: "server1.{{ ispconfig.hostname }}"
+      email: "webmaster@{{ ispconfig.hostname }}"
+  roles:
+    - install-python-libs
+    - update-upgrade
+    - change-to-bash
+    - disable-apparmor
+    - disable-sendmail
+    - install-tools
+    - install-mariadb
+    - install-dovecot
+    - install-postfix
+    - install-virus-protection
+    - install-spam-protection
+    - install-webserver-etc
+    - enable-ruby
+    - enable-php-opcode-cache
+    - install-php-fpm
+    - install-hiphop-vm
+    - install-lets-encrypt
+    - install-mailman
+    - install-pureftpd-quota
+    - install-bind-dns-server
+    - install-vlogger-webalizer-awstats
+    - install-jailkit
+    - install-fail2ban
+    - install-ufw
+    - install-roundcube
+    - install-isp-config

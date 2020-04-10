@@ -1,0 +1,9 @@
+- name: Enable Ruby file serving in apache
+  replace:
+    path: /etc/mime.types
+    regexp: '^application/x-ruby(\s+)rb'
+    replace: "#application/x-ruby                             rb"
+- name: Restart Apache service
+  service:
+    name: apache2
+    state: restarted

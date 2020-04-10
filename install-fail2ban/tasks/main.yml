@@ -1,0 +1,12 @@
+- name: Install Fail2ban
+  package:
+    name:
+      - fail2ban
+- name: Make fail2ban monitor PureFTPd and Dovecot
+  copy:
+    src: jail.local
+    dest: /etc/fail2ban/jail.local
+- name: Restart Fail2ban service
+  service:
+    name: fail2ban
+    state: restarted

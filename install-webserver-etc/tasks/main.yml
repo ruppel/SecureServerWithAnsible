@@ -1,0 +1,68 @@
+- name: Install Apache, PHP and stuff
+  package:
+    name:
+      - apache2
+      - apache2-doc
+      - apache2-utils
+      - libapache2-mod-php
+      - php7.2
+      - php7.2-common
+      - php7.2-gd
+      - php7.2-mysql
+      - php7.2-imap
+      - phpmyadmin
+      - php7.2-cli
+      - php7.2-cgi
+      - libapache2-mod-fcgid
+      - apache2-suexec-pristine
+      - php-pear
+      - mcrypt
+      - imagemagick
+      - libruby
+      - libapache2-mod-python
+      - php7.2-curl
+      - php7.2-intl
+      - php7.2-pspell
+      - php7.2-recode
+      - php7.2-sqlite3
+      - php7.2-tidy
+      - php7.2-xmlrpc
+      - php7.2-xsl
+      - memcached
+      - php-memcache
+      - php-imagick
+      - php-gettext
+      - php7.2-zip
+      - php7.2-mbstring
+      - php-soap
+      - php7.2-soap
+    state: present
+- name: Reconfigure PHPMyAdmin to our needs
+  expect:
+    command: dpkg-reconfigure -f readline phpmyadmin
+    echo: yes
+    timeout: 15
+    responses:
+      (.*)Reinstall database for phpmyadmin\? \[yes/no\](.*): "no"
+      (.*)Web server to reconfigure automatically(.*): "1"
+- name: Add apache modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - suexec
+    - rewrite
+    - ssl
+    - actions
+    - include
+    - cgi
+- name: Protect against the HTTPOXY vulnerability
+  copy:
+    src: httpoxy.conf
+    dest: /etc/apache2/conf-available/httpoxy.conf
+- name: Enable httpoxy.conf for apache
+  command: a2enconf httpoxy
+- name: Restart Apache service
+  service:
+    name: apache2
+    state: restarted

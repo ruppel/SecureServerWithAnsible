@@ -1,9 +1,9 @@
 all:
-  hosts:
-     target:
-        ansible_host: 192.168.1.185
-        ansible_connection: ssh
-        ansible_user: osboxes
-        ansible_ssh_pass: osboxes.org
-        ansible_python_interpreter: /usr/bin/python3
-        ansible_become_password: osboxes.org
+   hosts:
+      target:
+         ansible_host: 192.168.1.182
+         ansible_connection: ssh
+         ansible_user: osboxes
+         ansible_ssh_pass: osboxes.org
+         ansible_python_interpreter: /usr/bin/python3
+         ansible_become_password: osboxes.org

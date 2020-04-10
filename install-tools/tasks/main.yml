@@ -1,0 +1,19 @@
+- name: Install OpenSSL, GetMail, RKHunter, BinUtils
+  package:
+    name:
+      - openssl
+      - getmail4
+      - rkhunter
+      - binutils
+    state: present
+- name: Install archiving tools
+  package:
+    name:
+      - unzip
+      - bzip2
+      - arj
+      - nomarch
+      - lzop
+      - cabextract
+      - zip
+    state: present

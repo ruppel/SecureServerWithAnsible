@@ -1,0 +1,9 @@
+- name: Install Dovecot
+  package:
+    name:
+      - dovecot-imapd
+      - dovecot-pop3d
+      - dovecot-mysql
+      - dovecot-sieve
+      - dovecot-lmtpd
+    state: present

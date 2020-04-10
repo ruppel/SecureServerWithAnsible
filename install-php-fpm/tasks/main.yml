@@ -1,0 +1,17 @@
+- name: Install PHP FPM
+  package:
+    name:
+      - php7.2-fpm
+    state: present
+- name: Add apache modules actions proxy_fcgi alias
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - actions
+    - proxy_fcgi
+    - alias
+- name: Restart Apache service
+  service:
+    name: apache2
+    state: restarted

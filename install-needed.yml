@@ -4,4 +4,4 @@
   become: yes
   tasks:
     - name: Raw installation
-      raw: 'apt-get install -y python3 sudo gnupg python3-apt'
+      raw: "apt-get install -y python3 sudo gnupg"
