@@ -1,0 +1,5 @@
+- name: Server hardening
+  hosts: target
+  become: yes
+  tasks:
+    -

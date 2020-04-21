@@ -23,7 +23,10 @@ I just made a few changes:
 
 # Setup ansible host
 
-- `ansible-playbook -i testinventory.yml install-needed.yml`
+- Have a non-root user on the host, who is allowed to call `sudo`
+  (On Ubuntu `adduser username`, give password and data and do a `usermod -aG sudo username`)
+- `ansible-playbook -i testinventory.yml bootstrap.yml`
+  This checks the ssh port and changes it if needed and installs needed packages for ansible.
 
 # Usage
 
