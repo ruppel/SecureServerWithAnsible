@@ -8,7 +8,7 @@ all:
          ansible_python_interpreter: /usr/bin/python3
          ansible_become_password: osboxes.org
          ispconfig:
-            hostname: "example.com"
+            hostname: "myserverdomainname.com"
             admin_password: "verri##5##Crrittical"
          mail:
             system_mail_name: "server1.{{ ispconfig.hostname }}"

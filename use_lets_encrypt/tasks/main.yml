@@ -1,0 +1,134 @@
+#
+# ISPConfig CERT
+#
+- name: Backup ispconfig cert file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /usr/local/ispconfig/interface/ssl/ispserver.crt
+    backupfiledescription: "ispconfig cert file"
+
+- name: Create a symbolic link for ispconfig cert
+  file:
+    src: /etc/letsencrypt/live/www.{{ ispconfig.hostname }}/fullchain.pem
+    dest: /usr/local/ispconfig/interface/ssl/ispserver.crt
+    state: link
+#
+# ISPConfig KEY
+#
+- name: Backup ispconfig key file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /usr/local/ispconfig/interface/ssl/ispserver.key
+    backupfiledescription: "ispconfig key file"
+
+- name: Create a symbolic link for ispconfig key
+  file:
+    src: /etc/letsencrypt/live/www.{{ ispconfig.hostname }}/privkey.pem
+    dest: /usr/local/ispconfig/interface/ssl/ispserver.key
+    state: link
+#
+# ISPConfig PEM
+#
+- name: Backup ispconfig pem file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /usr/local/ispconfig/interface/ssl/ispserver.pem
+    backupfiledescription: "ispconfig pem file"
+- name: Create ispconfig pem file
+  shell:
+    cmd: cat ispserver.{key,crt} > ispserver.pem
+    chdir: /usr/local/ispconfig/interface/ssl/
+- name: Change file permissions
+  file:
+    path: /usr/local/ispconfig/interface/ssl/ispserver.pem
+    mode: "0600"
+
+#
+# Postfix CERT
+#
+
+- name: Backup postfix cert file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /etc/postfix/smtpd.cert
+    backupfiledescription: "postfix cert file"
+
+- name: Create a symbolic link for postfix cert
+  file:
+    src: /usr/local/ispconfig/interface/ssl/ispserver.crt
+    dest: /etc/postfix/smtpd.cert
+    state: link
+
+#
+# Postfix KEY
+#
+
+- name: Backup postfix cert file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /etc/postfix/smtpd.key
+    backupfiledescription: "postfix key file"
+
+- name: Create a symbolic link for postfix key
+  file:
+    src: /usr/local/ispconfig/interface/ssl/ispserver.key
+    dest: /etc/postfix/smtpd.key
+    state: link
+
+#
+# Pureftp PEM
+#
+- name: Backup pureftpd pem file
+  include_role:
+    name: backup-file
+  vars:
+    backupfilename: /etc/ssl/private/pure-ftpd.pem
+    backupfiledescription: "pureftpd pem file"
+
+- name: Create a symbolic link for pureftpd pem
+  file:
+    src: /usr/local/ispconfig/interface/ssl/ispserver.pem
+    dest: /etc/ssl/private/pure-ftpd.pem
+    state: link
+    mode: "0600"
+
+- name: Restart services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - postfix
+    - dovecot
+    - pure-ftpd-mysql
+#
+# No monit
+#
+- name: Install incron
+  package:
+    name:
+      - incron
+    state: present
+- name: create init.d script for ISPSERVER.PEM AUTO UPDATER
+  copy:
+    src: le_ispc_pem.sh
+    dest: /etc/init.d/le_ispc_pem.sh
+    mode: u+x
+- name: Add root as an allowed user for incrontab
+  lineinfile:
+    dest: /etc/incron.allow
+    line: root
+- debug:
+    msg: Unfortunately incrontab is not scriptable with ansible!
+- debug:
+    msg: Login to server and do a 'sudo incrontab -e'
+- debug:
+    msg: "Add the following line to the incrontab:"
+- debug:
+    msg: "/etc/letsencrypt/archive/www.{{ ispconfig.hostname }}/ IN_MODIFY ./etc/init.d/le_ispc_pem.sh"
+- debug:
+    msg: "Then restart apache with $ sudo service apache2 restart"

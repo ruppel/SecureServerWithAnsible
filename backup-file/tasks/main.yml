@@ -1,0 +1,15 @@
+- name: Check if {{ backupfiledescription }} exists
+  stat:
+    path: "{{ backupfilename }}"
+  register: mystat
+- name: Backup {{ backupfiledescription }}
+  copy:
+    src: "{{ backupfilename }}"
+    dest: "{{ backupfilename }}-{{ ansible_date_time.iso8601_basic_short }}.bak"
+    remote_src: yes
+  when: mystat.stat.exists
+- name: Remove {{ backupfiledescription }}
+  file:
+    path: "{{ backupfilename }}"
+    state: absent
+  when: mystat.stat.exists

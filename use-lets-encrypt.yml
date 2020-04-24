@@ -1,0 +1,5 @@
+- name: Use Let's Encrypt
+  hosts: target
+  become: yes
+  roles:
+    - use_lets_encrypt
