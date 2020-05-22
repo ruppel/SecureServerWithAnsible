@@ -1,0 +1,19 @@
+- name: "Disable root login"
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+- name: "No Password Authentication"
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+- name: "No PAM"
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^UsePAM"
+    line: "UsePAM no"
+- name: Restart sshd
+  service:
+    name: sshd
+    state: restarted

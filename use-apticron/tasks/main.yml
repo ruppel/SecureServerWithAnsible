@@ -1,0 +1,16 @@
+- name: Apticron has to be present
+  package:
+    name:
+      - apticron
+    state: present
+- name: Reconfigure Apticron
+  expect:
+    command: dpkg-reconfigure -f readline apticron
+    timeout: 15
+    responses:
+      (.*)E-Mail address\(es\) to notify(.*): "{{ mail.postmaster_email }}"
+- name: Set Mail to be notified
+  lineinfile:
+    dest: "/etc/apticron/apticron.conf"
+    regexp: '^(\s*)EMAIL(\s*)=(.*)'
+    line: "EMAIL={{ mail.postmaster_email }}"

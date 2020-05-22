@@ -45,7 +45,33 @@ Thanks to ahrasis!
 
 - In browser go to `www.myserverdomainname.com:8080` (use the FQDN from your configuration!!) (ispconfig.hostname)
 - Login with name `admin`and the password you configured in your configuration (ispconfig.admin_password)
-- Go to "Sites" and add a new website with name `www.myserverdomainname.com` Be sure to activate `SSL` and `Let's Encrypt SSL` and save the site
+- Go to "Sites" and add a new website with name `myserverdomainname.com` Be sure to activate `SSL` and `Let's Encrypt SSL` and `Auto-Subdomain` to `www.` and save the site
 - Wait a minute to let Let's Encrypt do it's work
 - Call `https://www.myserverdomainname.com` in your browser. The SSL connection should be secured by Lets Encrypt
 - `ansible-playbook -i myinventory.yml use-lets-encrypt.yml`
+- Create the incrontab entry on the server as given in the debug output
+- restart apache on the server as given in the debug output
+
+# Activate firewall (ufw) in the ISPConfig Web-UI
+
+- Go to `www.myserverdomainname.com:8080` (use the FQDN from your configuration!!) and login in as admin (see above)
+- Go to `System`->`Firewall`
+- Click on `Add Firewall record`
+- Choose your server
+- Edit the TCP Ports. **WARNING Be sure to add your specified SSH Port**. You might want to delete some of the ports not used.
+- Be sure that the state is `Active`
+- Click on `Save`
+- After a few seconds the firewall should be active
+
+# Configure your servers and emails
+
+- You should now configure your servers and email adresses using the ISPConfig Web-UI
+- The mailadresses used in the `myinventory.yml` file should be present
+
+# Hardening (and some other stuff) of the server
+
+- The next step will do some hardening and if something is wrong might close your server for **any** ssh connection.
+- So be sure to have an open ssh connection in parallel to your server to correct things. Open cennections will stay open, even if SSHD is restarted with some other configuration.
+- Be sure to have set up your SSH for using public / private Key authentication!!
+- Be sure to have a non-root user for SSH connections!!
+- `ansible-playbook -i myinventory.yml server-hardening.yml`

@@ -10,7 +10,7 @@
 
 - name: Create a symbolic link for ispconfig cert
   file:
-    src: /etc/letsencrypt/live/www.{{ ispconfig.hostname }}/fullchain.pem
+    src: /etc/letsencrypt/live/{{ ispconfig.hostname }}/fullchain.pem
     dest: /usr/local/ispconfig/interface/ssl/ispserver.crt
     state: link
 #
@@ -25,7 +25,7 @@
 
 - name: Create a symbolic link for ispconfig key
   file:
-    src: /etc/letsencrypt/live/www.{{ ispconfig.hostname }}/privkey.pem
+    src: /etc/letsencrypt/live/{{ ispconfig.hostname }}/privkey.pem
     dest: /usr/local/ispconfig/interface/ssl/ispserver.key
     state: link
 #
@@ -129,6 +129,6 @@
 - debug:
     msg: "Add the following line to the incrontab:"
 - debug:
-    msg: "/etc/letsencrypt/archive/www.{{ ispconfig.hostname }}/ IN_MODIFY ./etc/init.d/le_ispc_pem.sh"
+    msg: "/etc/letsencrypt/archive/{{ ispconfig.hostname }}/ IN_MODIFY ./etc/init.d/le_ispc_pem.sh"
 - debug:
     msg: "Then restart apache with $ sudo service apache2 restart"

@@ -1,0 +1,10 @@
+- name: Server hardening
+  hosts: target
+  become: yes
+  roles:
+    - update-upgrade
+    - secure-ssh
+    - use-logwatch
+    - use-apticron
+    - forward-local-root-mails
+    - use-monit

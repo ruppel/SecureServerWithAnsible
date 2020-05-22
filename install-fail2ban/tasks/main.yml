@@ -2,8 +2,12 @@
   package:
     name:
       - fail2ban
-- name: Make fail2ban monitor PureFTPd and Dovecot
+- name: Copy apache filter to server
   copy:
+    src: apache-404.local
+    dest: /etc/fail2ban/filter.d/apache-404.local
+- name: Copy jail.local to server
+  template:
     src: jail.local
     dest: /etc/fail2ban/jail.local
 - name: Restart Fail2ban service

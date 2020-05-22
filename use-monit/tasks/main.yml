@@ -1,0 +1,60 @@
+- name: Monit has to be installed
+  package:
+    name:
+      - monit
+    state: present
+- name: Create local monit config
+  blockinfile:
+    path: /etc/monit/conf.d/10-local-config
+    create: yes
+    block: |
+      # Use local MTA
+      set mailserver localhost
+      set alert {{ mail.postmaster_email }}
+      set mail-format {  from: {{ mail.postmaster_email }} }
+
+      # Web Access only from localhost
+      set httpd port 2812 and
+        use address localhost
+        allow localhost
+
+      # Some General System monitoring
+      check system $HOST
+        if loadavg (1min) > 4 then alert
+        if loadavg (5min) > 2 then alert
+        if cpu usage > 95% for 10 cycles then alert
+        if memory usage > 75% then alert
+        if swap usage > 25% then alert
+        if cpu usage (user) > 70% then alert
+        if cpu usage (system) > 30% then alert
+        if cpu usage (wait) > 20% then alert
+- name: Enable tool monitoring
+  file:
+    src: /etc/monit/conf-available/{{ item }}
+    dest: /etc/monit/conf-enabled/{{ item }}
+    state: link
+  loop:
+    - apache2
+    - mysql
+    - rsyslog
+- name: Enable tool monitoring
+  file:
+    src: /etc/monit/monitrc.d/{{ item }}
+    dest: /etc/monit/conf-enabled/{{ item }}
+    state: link
+  loop:
+    - fail2ban
+- name: Copy postfix config
+  copy:
+    src: /etc/monit/conf-available/postfix
+    dest: /etc/monit/conf-enabled/postfix
+    remote_src: yes
+- name: Fix postfix config
+  replace:
+    path: /etc/monit/conf-enabled/postfix
+    regexp: '^(\s*)check(\s+.*)/usr/lib/postfix/master$'
+    replace: '\1check\2/usr/lib/postfix/sbin/master'
+- name: Restart monit
+  service:
+    name: monit
+    state: restarted

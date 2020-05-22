@@ -1,0 +1,6 @@
+- name: Add Alias for root
+  lineinfile:
+    dest: "/etc/aliases"
+    regexp: '^(\s*)root:(.*)'
+    line: "root: {{ mail.postmaster_email }}"
+    insertbefore: BOF
