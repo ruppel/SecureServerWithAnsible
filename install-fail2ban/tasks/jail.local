@@ -1,7 +1,7 @@
 [DEFAULT]
 bantime  = 60m
-destemail = webmaster@dickerserver.de
-sendername = fail2ban@dickerserver.de
+destemail = {{ mail.postmaster_email }}
+sendername = fail2ban@{{ ispconfig.hostname }}
 mta = mail
 action = %(action_mwl)s
 
@@ -19,6 +19,7 @@ maxretry = 3
 [dovecot]
 enabled = true
 maxretry = 3
+mode = aggressive
 
 [postfix]
 enabled = true
@@ -31,7 +32,7 @@ enabled = true
 
 [postfix-sasl]
 enabled = true
-bantime  = 24h
+bantime  = 1d
 findtime = 20m
 maxretry = 3
 
@@ -70,3 +71,8 @@ logpath = /var/log/apache*/*access.log
 maxretry = 8
 findtime = 10m
 bantime  = 15m
+
+[recidive]
+enabled = true
+findtime = 1week
+bantime = 26week
