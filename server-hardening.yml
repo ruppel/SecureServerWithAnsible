@@ -3,6 +3,7 @@
   become: yes
   roles:
     - update-upgrade
+    - restart-server
     - secure-ssh
     - use-logwatch
     - use-apticron
