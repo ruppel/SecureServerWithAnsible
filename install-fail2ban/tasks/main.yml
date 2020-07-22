@@ -39,7 +39,7 @@
 - name: Add shell script to cron.hourly
   file:
     src: /opt/fail2ban-subnet/fail2ban-subnet-starter.sh
-    dest: /etc/cron.hourly/fail2ban-subnet-starter.sh
+    dest: /etc/cron.hourly/fail2ban-subnet-starter
     owner: root
     group: root
     state: link
